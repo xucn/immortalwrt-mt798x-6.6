@@ -500,7 +500,7 @@ define KernelPackage/phy-airoha-en8811h
   KCONFIG:=CONFIG_AIR_EN8811H_PHY
   FILES:= \
    $(LINUX_DIR)/drivers/net/phy/air_en8811.ko
-  AUTOLOAD:=$(call AutoLoad,20,air_en8811h,1)
+  AUTOLOAD:=$(call AutoLoad,20,air_en8811,1)
 endef
 
 define KernelPackage/phy-airoha-en8811h/description

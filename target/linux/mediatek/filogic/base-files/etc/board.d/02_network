@@ -70,6 +70,7 @@ mediatek_setup_interfaces()
 	mediatek,mt7981-rfb|\
 	netcore,n60|\
 	netcore,n60-pro|\
+	ruijie,rg-x60-new|\
 	ruijie,rg-x60-pro|\
 	unielec,u7981-01*|\
 	zbtlink,zbt-z8102ax|\
@@ -235,6 +236,7 @@ mediatek_setup_macs()
 		wan_mac=$(macaddr_add "$lan_mac" 1)
 		label_mac=$wan_mac
 		;;
+	ruijie,rg-x60-new|\
 	ruijie,rg-x60-pro)
 		label_mac=$(mtd_get_mac_ascii product_info ethaddr)
 		wan_mac=$label_mac
