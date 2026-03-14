@@ -89,8 +89,13 @@
 	gmac1: mac@1 {
 		compatible = "mediatek,eth-mac";
 		reg = <1>;
-		phy-handle = <&phy15>;
 		phy-mode = "2500base-x";
+
+		fixed-link {
+			speed = <2500>;
+			full-duplex;
+			pause;
+		};
 	};
 
 	mdio: mdio-bus {
@@ -113,9 +118,12 @@
 	phy15: phy@f {
 		compatible = "ethernet-phy-id03a2.a411";
 		reg = <15>;
+		reset-gpios = <&pio 6 GPIO_ACTIVE_LOW>;
 		reset-assert-us = <10000>;
 		reset-deassert-us = <20000>;
-		reset-gpios = <&pio 6 GPIO_ACTIVE_LOW>;
+		phy-mode = "2500base-x";
+		full-duplex;
+		pause;
 	};
 };
 
