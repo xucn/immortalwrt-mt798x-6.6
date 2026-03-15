@@ -77,4 +77,4 @@ EOF
         uses: actions/upload-artifact@v4
         with:
           name: firmware
-          path: bin/targets/mediatek/mt7986/*.bin
+          path: bin/targets/mediatek/filogic/*.bin
