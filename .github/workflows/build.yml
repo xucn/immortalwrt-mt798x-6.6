@@ -1,0 +1,110 @@
+name: Build ImmortalWRT Firmware
+
+on:
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Enable debug mode'
+        required: false
+        default: 'false'
+        
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Update feeds
+        run: |
+          ./scripts/feeds update -a
+
+      - name: Install feeds
+        run: |
+          ./scripts/feeds install -a
+
+      - name: Copy config
+        run: |
+          cp defconfig/mt7986-ax6000.config .config
+
+      - name: Enable additional packages
+        run: |
+          ./scripts/feeds install -a -p passwall2
+          
+          cat >> .config << 'EOF'
+CONFIG_PACKAGE_luci-app-turboacc-mtk=y
+CONFIG_PACKAGE_turboacc-mtk=y
+
+CONFIG_PACKAGE_frpc=y
+CONFIG_PACKAGE_luci-app-frpc=y
+
+CONFIG_PACKAGE_cups=y
+CONFIG_PACKAGE_cups-filters=y
+CONFIG_PACKAGE_luci-app-cups=y
+CONFIG_PACKAGE_kmod-usb-printer=y
+
+CONFIG_PACKAGE_vlmcsd=y
+CONFIG_PACKAGE_luci-app-vlmcsd=y
+
+CONFIG_PACKAGE_luci-app-passwall2=y
+CONFIG_PACKAGE_passwall2=y
+CONFIG_PACKAGE_xray-core=y
+CONFIG_PACKAGE_sing-box=y
+CONFIG_PACKAGE_hysteria2=y
+CONFIG_PACKAGE_trojan-go=y
+CONFIG_PACKAGE_shadowsocks-rust=y
+CONFIG_PACKAGE_shadowsocks-libev=y
+CONFIG_PACKAGE_naiveproxy=y
+CONFIG_PACKAGE_v2ray-core=y
+CONFIG_PACKAGE_v2ray-geoip=y
+CONFIG_PACKAGE_v2ray-geosite=y
+CONFIG_PACKAGE_geoview=y
+CONFIG_PACKAGE_ipt2socks=y
+CONFIG_PACKAGE_tcping=y
+CONFIG_PACKAGE_curl=y
+CONFIG_PACKAGE_unzip=y
+CONFIG_PACKAGE_ip-full=y
+CONFIG_PACKAGE_lua=y
+CONFIG_PACKAGE_luci-lib-jsonc=y
+EOF
+
+      - name: Build firmware
+        run: |
+          make -j$(nproc) V=s 2>&1 | tee build.log
+        
+      - name: Check build result
+        if: success() || failure()
+        run: |
+          if grep -q "ERROR:" build.log; then
+            echo "Build failed! Errors found:"
+            grep "ERROR:" build.log | head -20
+            exit 1
+          fi
+          
+          echo "Build completed!"
+          ls -la bin/targets/mediatek/mt7986/*.bin 2>/dev/null || true
+
+      - name: Upload firmware artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: immortalwrt-firmware
+          path: |
+            bin/targets/mediatek/mt7986/*.bin
+          retention-days: 7
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 30
