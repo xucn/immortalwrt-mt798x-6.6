@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - master
+      - openwrt-24.10-6.6
 
 jobs:
   build:
