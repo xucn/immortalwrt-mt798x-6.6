@@ -1,13 +1,7 @@
-name: Build ImmortalWRT Firmware
+name: Build OpenWRT
 
 on:
   workflow_dispatch:
-    inputs:
-      debug:
-        description: 'Enable debug mode'
-        required: false
-        default: 'false'
-        
   push:
     branches:
       - main
@@ -18,10 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout source code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential ccache libncurses-dev zlib1g-dev libssl-dev git wget flex bison
 
       - name: Update feeds
         run: |
@@ -30,15 +29,11 @@ jobs:
       - name: Install feeds
         run: |
           ./scripts/feeds install -a
+          ./scripts/feeds install -a -p passwall2
 
-      - name: Copy config
+      - name: Configure
         run: |
           cp defconfig/mt7986-ax6000.config .config
-
-      - name: Enable additional packages
-        run: |
-          ./scripts/feeds install -a -p passwall2
-          
           echo "CONFIG_PACKAGE_luci-app-turboacc-mtk=y" >> .config
           echo "CONFIG_PACKAGE_turboacc-mtk=y" >> .config
           echo "CONFIG_PACKAGE_frpc=y" >> .config
@@ -51,54 +46,13 @@ jobs:
           echo "CONFIG_PACKAGE_luci-app-vlmcsd=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2=y" >> .config
           echo "CONFIG_PACKAGE_passwall2=y" >> .config
-          echo "CONFIG_PACKAGE_xray-core=y" >> .config
-          echo "CONFIG_PACKAGE_sing-box=y" >> .config
-          echo "CONFIG_PACKAGE_hysteria2=y" >> .config
-          echo "CONFIG_PACKAGE_trojan-go=y" >> .config
-          echo "CONFIG_PACKAGE_shadowsocks-rust=y" >> .config
-          echo "CONFIG_PACKAGE_shadowsocks-libev=y" >> .config
-          echo "CONFIG_PACKAGE_naiveproxy=y" >> .config
-          echo "CONFIG_PACKAGE_v2ray-core=y" >> .config
-          echo "CONFIG_PACKAGE_v2ray-geoip=y" >> .config
-          echo "CONFIG_PACKAGE_v2ray-geosite=y" >> .config
-          echo "CONFIG_PACKAGE_geoview=y" >> .config
-          echo "CONFIG_PACKAGE_ipt2socks=y" >> .config
-          echo "CONFIG_PACKAGE_tcping=y" >> .config
-          echo "CONFIG_PACKAGE_curl=y" >> .config
-          echo "CONFIG_PACKAGE_unzip=y" >> .config
-          echo "CONFIG_PACKAGE_ip-full=y" >> .config
-          echo "CONFIG_PACKAGE_lua=y" >> .config
-          echo "CONFIG_PACKAGE_luci-lib-jsonc=y" >> .config
 
-      - name: Build firmware
+      - name: Build
         run: |
-          make -j$(nproc) V=s 2>&1 | tee build.log
-        
-      - name: Check build result
-        if: success() || failure()
-        run: |
-          if grep -q "ERROR:" build.log; then
-            echo "Build failed! Errors found:"
-            grep "ERROR:" build.log | head -20
-            exit 1
-          fi
-          
-          echo "Build completed!"
-          ls -la bin/targets/mediatek/mt7986/*.bin 2>/dev/null || true
+          make -j$(nproc) V=s
 
-      - name: Upload firmware artifacts
-        if: success()
+      - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
-          name: immortalwrt-firmware
-          path: |
-            bin/targets/mediatek/mt7986/*.bin
-          retention-days: 7
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
-          retention-days: 30
+          name: firmware
+          path: bin/targets/mediatek/mt7986/*.bin
