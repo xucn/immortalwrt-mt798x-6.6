@@ -46,6 +46,54 @@ jobs:
           echo "CONFIG_PACKAGE_luci-app-vlmcsd=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2=y" >> .config
           echo "CONFIG_PACKAGE_passwall2=y" >> .config
+          echo "CONFIG_PACKAGE_xray-core=y" >> .config
+          echo "CONFIG_PACKAGE_sing-box=y" >> .config
+          echo "CONFIG_PACKAGE_hysteria2=y" >> .config
+          echo "CONFIG_PACKAGE_v2ray-core=y" >> .config
+          echo "CONFIG_PACKAGE_v2ray-geoip=y" >> .config
+          echo "CONFIG_PACKAGE_v2ray-geosite=y" >> .config
+          echo "CONFIG_PACKAGE_geoview=y" >> .config
+          echo "CONFIG_PACKAGE_shadowsocks-rust=y" >> .config
+          echo "CONFIG_PACKAGE_shadowsocks-libev=y" >> .config
+          echo "CONFIG_PACKAGE_trojan-go=y" >> .config
+          echo "CONFIG_PACKAGE_naiveproxy=y" >> .config
+          echo "CONFIG_PACKAGE_curl=y" >> .config
+          echo "CONFIG_PACKAGE_unzip=y" >> .config
+          echo "CONFIG_PACKAGE_ip-full=y" >> .config
+          echo "CONFIG_PACKAGE_lua=y" >> .config
+          echo "CONFIG_PACKAGE_luci-lib-jsonc=y" >> .config
+          echo "CONFIG_PACKAGE_luci-compat=y" >> .config
+          echo "CONFIG_PACKAGE_resolveip=y" >> .config
+          make defconfig
+          echo "CONFIG_PACKAGE_turboacc-mtk=y" >> .config
+          echo "CONFIG_PACKAGE_frpc=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-frpc=y" >> .config
+          echo "CONFIG_PACKAGE_cups=y" >> .config
+          echo "CONFIG_PACKAGE_cups-filters=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-cups=y" >> .config
+          echo "CONFIG_PACKAGE_kmod-usb-printer=y" >> .config
+          echo "CONFIG_PACKAGE_vlmcsd=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-vlmcsd=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-passwall2=y" >> .config
+          echo "CONFIG_PACKAGE_passwall2=y" >> .config
+          echo "CONFIG_PACKAGE_xray-core=y" >> .config
+          echo "CONFIG_PACKAGE_sing-box=y" >> .config
+          echo "CONFIG_PACKAGE_hysteria2=y" >> .config
+          echo "CONFIG_PACKAGE_v2ray-core=y" >> .config
+          echo "CONFIG_PACKAGE_v2ray-geoip=y" >> .config
+          echo "CONFIG_PACKAGE_v2ray-geosite=y" >> .config
+          echo "CONFIG_PACKAGE_geoview=y" >> .config
+          echo "CONFIG_PACKAGE_shadowsocks-rust=y" >> .config
+          echo "CONFIG_PACKAGE_shadowsocks-libev=y" >> .config
+          echo "CONFIG_PACKAGE_trojan-go=y" >> .config
+          echo "CONFIG_PACKAGE_naiveproxy=y" >> .config
+          echo "CONFIG_PACKAGE_curl=y" >> .config
+          echo "CONFIG_PACKAGE_unzip=y" >> .config
+          echo "CONFIG_PACKAGE_ip-full=y" >> .config
+          echo "CONFIG_PACKAGE_lua=y" >> .config
+          echo "CONFIG_PACKAGE_luci-lib-jsonc=y" >> .config
+          echo "CONFIG_PACKAGE_luci-compat=y" >> .config
+          echo "CONFIG_PACKAGE_resolveip=y" >> .config
 
       - name: Build
         run: |
